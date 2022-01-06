@@ -1,10 +1,10 @@
 import Firebase from "../firebase";
 import store, { Notification, NotificationTypes } from "../store";
 
-export default (function dispatcher () {
+export default (function dispatcher() {
   const firebase = new Firebase();
 
-  async function dispatch (notification: Notification) {
+  async function dispatch(notification: Notification) {
     switch (notification.type) {
       case NotificationTypes.PUSH:
         const saved = await store.saveNotification(notification);
@@ -13,6 +13,7 @@ export default (function dispatcher () {
         );
         await Promise.all(tasks);
         await store.setNotificationStatus(saved._id, true);
+        break;
       case NotificationTypes.SMS:
       default:
         console.error('Nothing to do here...');

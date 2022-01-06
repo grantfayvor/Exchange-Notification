@@ -25,7 +25,7 @@ class Firebase implements Notifier {
     this.config = opts
   }
 
-  static createPayload(message: string, tag: string) : MessagingPayload {
+  static createPayload(message: string, tag: string): MessagingPayload {
     return {
       notification: {
         tag,
@@ -35,7 +35,7 @@ class Firebase implements Notifier {
     }
   }
 
-  async publish (message: string, recipient: string, tag: string): Promise<boolean> {
+  async publish(message: string, recipient: string, tag: string): Promise<boolean> {
     const payload = Firebase.createPayload(message, tag);
     const response = await admin.messaging().sendToDevice(recipient, payload, this.config);
     return response.successCount > 0;
