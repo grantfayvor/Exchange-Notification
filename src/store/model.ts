@@ -1,10 +1,22 @@
 import mongoose from "mongoose";
 
+export enum NotificationTypes {
+  PUSH = "push",
+  SMS = "sms"
+}
+
+export enum NotificationTags {
+  CREATE_ORDER = "create-order"
+}
+
 export interface Notification {
+  _id?: mongoose.Types.ObjectId;
   message: string;
   sender: any;
   recipients: string[];
   delivered: boolean;
+  type: NotificationTypes,
+  tag: NotificationTags;
 }
 
 const NotificationSchema = new mongoose.Schema<Notification>({
@@ -46,6 +58,18 @@ const NotificationSchema = new mongoose.Schema<Notification>({
     type: Boolean,
     required: true,
     default: false,
+  },
+  type: {
+    type: String,
+    required: true,
+    default: NotificationTypes.PUSH,
+    enum: NotificationTypes
+  },
+  tag: {
+    type: String,
+    required: true,
+    default: NotificationTags.CREATE_ORDER,
+    enum: NotificationTags
   }
 })
 

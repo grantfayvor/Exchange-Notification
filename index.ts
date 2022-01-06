@@ -1,8 +1,8 @@
 import "dotenv/config";
 import amqp from "amqplib/callback_api";
 
-import store from "./src/store";
-import { Notification } from "./src/store/model";
+import store, { Notification } from "./src/store";
+import dispatcher from "./src/dispatch";
 
 const rabbitConn = process.env.RABBITMQ_CONN as string;
 amqp.connect(rabbitConn, async (err, connection) => {
@@ -26,7 +26,7 @@ amqp.connect(rabbitConn, async (err, connection) => {
 
         const notification = JSON.parse(content as string) as Notification;
 
-        await store.saveNotification(notification);
+        await dispatcher.dispatch(notification);
       } catch (e) {
         console.error(e);
       }
