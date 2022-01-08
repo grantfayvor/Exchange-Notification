@@ -40,6 +40,13 @@ class Firebase implements Notifier {
     const response = await admin.messaging().sendToDevice(recipient, payload, this.config);
     return response.successCount > 0;
   }
+
+  async publishMultiple(message: string, recipients: string[], tag: string): Promise<boolean> {
+    const payload = Firebase.createPayload(message, tag);
+    await admin.messaging().subscribeToTopic(recipients, tag);
+    await admin.messaging().sendToTopic(tag, payload);
+    return true
+  }
 }
 
 export default Firebase;

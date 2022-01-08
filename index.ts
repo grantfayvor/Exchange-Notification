@@ -4,6 +4,8 @@ import amqp from "amqplib/callback_api";
 import store, { Notification } from "./src/store";
 import dispatcher from "./src/dispatch";
 
+// TODO add API to save users firebase recipient info
+
 const rabbitConn = process.env.RABBITMQ_CONN as string;
 amqp.connect(rabbitConn, async (err, connection) => {
   if (err) throw err;

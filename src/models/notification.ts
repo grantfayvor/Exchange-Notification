@@ -12,7 +12,7 @@ export enum NotificationTags {
 export interface Notification {
   _id?: mongoose.Types.ObjectId;
   message: string;
-  sender: any;
+  sender: string;
   recipients: string[];
   delivered: boolean;
   type: NotificationTypes,

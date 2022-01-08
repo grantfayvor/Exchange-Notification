@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 
-import Notification, { Notification as NotificationType } from "./model";
+import Notification, { Notification as NotificationType } from "../models/notification";
+import RecipientDevice, { RecipientDevice as RecipientDeviceType } from "../models/recipient.device";
 
-export * from "./model";
+export * from "../models/notification";
 
 async function connect() {
   const mongoConn = process.env.MONGODB_CONN as string;
@@ -22,9 +23,35 @@ function getUnsentNotifications() {
   return Notification.find({ delivered: false });
 }
 
+function saveRecipientDevice (recipient: RecipientDeviceType) {
+  return (new RecipientDevice(recipient)).save();
+}
+
+async function getRecipientsDevices(recipients: string[]): Promise<string[]> {
+  const res = await RecipientDevice.aggregate([
+    {
+      $match: {
+        uid: { $in: recipients },
+        active: true
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        tokens: {
+          $push: '$token'
+        }
+      }
+    }
+  ]);
+  return res[0].tokens;
+}
+
 export default {
   connect,
   saveNotification,
   getUnsentNotifications,
-  setNotificationStatus
+  setNotificationStatus,
+  saveRecipientDevice,
+  getRecipientsDevices
 }

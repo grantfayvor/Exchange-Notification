@@ -7,12 +7,10 @@ export default (function dispatcher() {
   async function dispatch(notification: Notification) {
     switch (notification.type) {
       case NotificationTypes.PUSH:
-        const saved = await store.saveNotification(notification);
-        const tasks = notification.recipients.map(
-          recipient => firebase.publish(notification.message, recipient, notification.tag)
-        );
-        await Promise.all(tasks);
-        await store.setNotificationStatus(saved._id, true);
+        const recipients = await store.getRecipientsDevices(notification.recipients);
+        const saved = await store.saveNotification({ ...notification, recipients });
+        const delivered = await firebase.publishMultiple(notification.message, recipients, notification.tag);
+        await store.setNotificationStatus(saved._id, delivered);
         break;
       case NotificationTypes.SMS:
       default:
